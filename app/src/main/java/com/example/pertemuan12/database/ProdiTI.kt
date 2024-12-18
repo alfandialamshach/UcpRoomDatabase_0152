@@ -9,29 +9,33 @@ import com.example.pertemuan12.dao.MataKuliahDao
 import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.entity.MataKuliah
 
+@Database(
+    entities = [Dosen::class, MataKuliah::class], // Gunakan array untuk daftar entity
+    version = 1,
+    exportSchema = false
+)
+abstract class ProdiTI : RoomDatabase() {
 
-@Database(entities = [Dosen::class],[MataKuliah::class], version = 1, exportSchema = false)
-abstract class ProdiTI : RoomDatabase(){
-
-    //Mendefinisikan fungsi untuk mengakses data Dosen
+    // Mendefinisikan fungsi untuk mengakses data Dosen
     abstract fun dosenDao(): Dosendao
 
-    //Mendefinisikan fungsi untuk mengakses data MataKuliah
+    // Mendefinisikan fungsi untuk mengakses data MataKuliah
     abstract fun mataKuliahDao(): MataKuliahDao
+
     companion object {
-        @Volatile// Memastikan nilai variabel Instance selalu sama di
-        private var Instance: ProdiTI? = null
+        @Volatile // Memastikan nilai variabel Instance selalu sama di seluruh thread
+        private var INSTANCE: ProdiTI? = null
 
         fun getDatabase(context: Context): ProdiTI {
-            return (Instance ?: synchronized(this){
+            return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(
                     context.applicationContext,
-                    ProdiTI::class.java, //Class database
-                    "KrsDatabase" //Nama database
+                    ProdiTI::class.java, // Class database
+                    "KrsDatabase" // Nama database
                 )
-                    .build().also { Instance= it }
-            })
+                    .build()
+                    .also { INSTANCE = it }
+            }
         }
     }
-
 }
