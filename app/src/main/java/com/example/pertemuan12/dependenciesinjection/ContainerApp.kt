@@ -13,6 +13,7 @@ interface InterfaceContainerApp {
 }
 
 class ContainerApp(private val context: Context) : InterfaceContainerApp {
+    // Pastikan mendapatkan database dari ProdiTIApp yang sudah ada
     override val repositoryDosen: RepositoryDosen by lazy {
         LocalRepositoriDosen(ProdiTI.getDatabase(context).dosenDao())
     }
