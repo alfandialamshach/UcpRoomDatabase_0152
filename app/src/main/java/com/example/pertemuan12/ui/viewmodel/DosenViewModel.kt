@@ -11,72 +11,72 @@ import kotlinx.coroutines.launch
 
 class MahasiswaViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(){
 
-    var uiState by mutableStateOf(DosenUIState())
+    var uiStateDosen by mutableStateOf(DosenUIState())
 
     // Memperbarui state berdasarkan input pengguna
-    fun updateState(dosenEvent: DosenEvent){
-        uiState = uiState.copy(
+    fun updateStateDosen(dosenEvent: DosenEvent){
+        uiStateDosen = uiStateDosen.copy(
             dosenEvent = dosenEvent,
         )
     }
     //validasi data input pengguna
-    private fun validateFields(): Boolean{
-        val event = uiState.dosenEvent
-        val errorState = FormErrorState(
+    private fun validateFieldsDosen(): Boolean{
+        val event = uiStateDosen.dosenEvent
+        val errorState = FormErrorStateDosen(
             nidn = if (event.nidn.isNotEmpty()) null else "NIM tidak boleh kosong",
             nama = if (event.nama.isNotEmpty()) null else "Nama tidak boleh kosong",
             jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin tidak boleh kosong",
             alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh kosong"
         )
-        uiState = uiState.copy(isEntryValid = errorState)
-        return errorState.isValid()
+        uiStateDosen = uiStateDosen.copy(isEntryValid = errorState)
+        return errorState.isValidDosen()
     }
 
     //Menyimpan data ke repository
     fun saveData() {
-        val currentEvent = uiState.dosenEvent
-        if (validateFields()){
+        val currentEventDosen = uiStateDosen.dosenEvent
+        if (validateFieldsDosen()){
             viewModelScope.launch {
                 try {
-                    repositoryDosen.insertDosen(currentEvent.toDosenEntity())
-                    uiState = uiState.copy(
+                    repositoryDosen.insertDosen(currentEventDosen.toDosenEntity())
+                    uiStateDosen = uiStateDosen.copy(
                         snackBarMessage = "Data Berhasil disimpan",
                         dosenEvent = DosenEvent(), // Reset Input form
-                        isEntryValid = FormErrorState() // Reset Error State
+                        isEntryValid = FormErrorStateDosen() // Reset Error State
                     )
                 } catch (e: Exception) {
-                    uiState =uiState.copy(
+                    uiStateDosen =uiStateDosen.copy(
                         snackBarMessage = " Data gagal disimpan"
                     )
                 }
             }
         } else {
-            uiState = uiState.copy(
+            uiStateDosen = uiStateDosen.copy(
                 snackBarMessage = "Input tidak valid. Perikasa kembali dta anda"
             )
         }
     }
 
     //Reset pesan snackbar setelah ditampilkan
-    fun resetSnackBarMessage() {
-        uiState = uiState.copy(snackBarMessage = null)
+    fun resetSnackBarMessageDosen() {
+        uiStateDosen = uiStateDosen.copy(snackBarMessage = null)
     }
 }
 
 data class DosenUIState(
     val dosenEvent: DosenEvent = DosenEvent(),
-    val isEntryValid: FormErrorState = FormErrorState(),
+    val isEntryValid: FormErrorStateDosen = FormErrorStateDosen(),
     val snackBarMessage:String?= null,
 )
 
-data class FormErrorState(
+data class FormErrorStateDosen(
     val nidn: String? = null,
     val nama: String? = null,
     val alamat: String? = null,
     val jenisKelamin: String? = null
 
 ){
-    fun isValid(): Boolean {
+    fun isValidDosen(): Boolean {
         return nidn == null && nama == null && jenisKelamin == null &&
                 alamat == null
     }
