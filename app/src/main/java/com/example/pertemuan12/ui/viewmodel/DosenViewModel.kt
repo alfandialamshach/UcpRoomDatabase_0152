@@ -9,7 +9,7 @@ import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.repository.RepositoryDosen
 import kotlinx.coroutines.launch
 
-class MahasiswaViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(){
+class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(){
 
     var uiStateDosen by mutableStateOf(DosenUIState())
 
