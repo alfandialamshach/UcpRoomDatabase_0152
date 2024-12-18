@@ -15,7 +15,7 @@ interface MataKuliahDao {
     suspend fun  insertMataKuliah(mataKuliah: MataKuliah)
 
     //getAllMataKuliah
-    @Query("SELECT * FROM dosen ORDER BY nama ASC")
+    @Query("SELECT * FROM mataKuliah ORDER BY nama ASC")
     fun getAllMataKuliah(): Flow<List<MataKuliah>>
 
     //getMataKuliah
