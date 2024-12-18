@@ -20,7 +20,7 @@ import com.example.pertemuan12.repository.RepositoryDosen
 import com.example.pertemuan12.repository.RepositoryMataKuliah
 
 
-class HomeMhsViewModel(
+class HomeProTIViewModel(
     private val repositoryDosen: RepositoryDosen,
     private val repositoryMataKuliah: RepositoryMataKuliah
 ) : ViewModel() {
