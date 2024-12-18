@@ -11,7 +11,7 @@ interface RepositoryDosen {
     fun getAllDosen(): Flow<List<Dosen>>
 
     //getDosen
-    fun getDosen(nim: String) : Flow<Dosen>
+    fun getDosen(nidn: String) : Flow<Dosen>
 
 
 }
