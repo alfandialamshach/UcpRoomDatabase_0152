@@ -11,10 +11,22 @@ import com.example.pertemuan12.repository.RepositoryDosen
 import com.example.pertemuan12.repository.RepositoryMataKuliah
 import kotlinx.coroutines.launch
 
-class MataKuliahViewModel (private  val repositoryMataKuliah: RepositoryMataKuliah) : ViewModel(){
+class MataKuliahViewModel (private  val repositoryMataKuliah: RepositoryMataKuliah, private val repositoryDosen: RepositoryDosen) : ViewModel(){
 
     var uiStateMataKuliah by mutableStateOf(MataKuliahUIState())
 
+    // Daftar dosen yang bisa dipilih
+    var dosenList by mutableStateOf<List<Dosen>>(emptyList())
+
+    // Inisialisasi untuk mengambil data dosen
+    init {
+        // Ambil daftar dosen dari repository dengan mengumpulkan data Flow
+        viewModelScope.launch {
+            repositoryDosen.getAllDosen().collect { dosenList ->
+                this@MataKuliahViewModel.dosenList = dosenList // Menyimpan hasil collect ke dalam dosenList
+            }
+        }
+    }
     // Memperbarui state berdasarkan input pengguna
     fun updateStatematakuliah(mataKuliahEvent: MataKuliahEvent){
         uiStateMataKuliah = uiStateMataKuliah.copy(
