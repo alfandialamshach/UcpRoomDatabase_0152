@@ -46,15 +46,16 @@ fun HomeDosenView(
     viewModel: HomeDosenViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),
     onAddMhs: () -> Unit = { },
     onDetailClick: (String) -> Unit = { },
+    onBack: () -> Unit,
     modifier : Modifier = Modifier
 ) {
     Scaffold (
         topBar = {
             CustomTopAppBar(
                 judul = "Daftar Mahasiswa",
-                showBackButton = false,
-                onBack = { },
-                modifier = modifier
+                showBackButton = true,
+                onBack = onBack,
+
             )
         },
         floatingActionButton = {
@@ -152,14 +153,14 @@ fun ListDosen(
         modifier = modifier
     ){
         items(
-            items= listDosen,
-            itemContent = { dosen ->
-                CardMhs(
-                    dosen = dosen,
-                    onClick = { onClick(dosen.nidn)}
-                )
-            }
+    items = listDosen,
+    itemContent = { dosen ->
+        CardMhs(
+            dosen = dosen,
+//            onClick = {} // Tidak melakukan apa-apa saat item diklik
         )
+    }
+)
     }
 }
 
