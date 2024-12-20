@@ -62,7 +62,8 @@ object PenyediaViewModelProdiTI{
         initializer {
             UpdateMataKuliahViewModel(
                 createSavedStateHandle(),
-                ProdiTIApp().containerApp.repositoryMataKuliah
+                ProdiTIApp().containerApp.repositoryMataKuliah,
+                ProdiTIApp().containerApp.repositoryDosen
             )
         }
     }
