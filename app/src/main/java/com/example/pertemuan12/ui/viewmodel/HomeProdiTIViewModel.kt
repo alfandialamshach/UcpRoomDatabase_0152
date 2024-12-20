@@ -1,10 +1,7 @@
 package com.example.pertemuan12.ui.viewmodel
 
-import androidx.compose.ui.input.key.Key.Companion.Home
-
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
-
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,20 +10,19 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import androidx.lifecycle.ViewModel
 import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.entity.MataKuliah
 import com.example.pertemuan12.repository.RepositoryDosen
 import com.example.pertemuan12.repository.RepositoryMataKuliah
 
-
-class HomeProTIViewModel(
-    private val repositoryDosen: RepositoryDosen,
-    private val repositoryMataKuliah: RepositoryMataKuliah
+class HomeProdiTIViewModel(
+    private val repositoryMataKuliah: RepositoryMataKuliah,
+    private val repositoryDosen: RepositoryDosen
 ) : ViewModel() {
 
+    // StateFlow for Dosen data
     val homeUiStateDosen: StateFlow<HomeUiStateDosen> = repositoryDosen.getAllDosen()
-        .filterNotNull()
+        .filterNotNull() // Ensure non-null data is emitted
         .map {
             HomeUiStateDosen(
                 listDosen = it.toList(),
@@ -34,8 +30,8 @@ class HomeProTIViewModel(
             )
         }
         .onStart {
-            emit(HomeUiStateDosen(isLoading = true))
-            delay(900)
+            emit(HomeUiStateDosen(isLoading = true)) // Emit loading state initially
+            delay(500) // Optional: Delay for loading indicator (adjust as needed)
         }
         .catch { throwable ->
             emit(
@@ -49,11 +45,12 @@ class HomeProTIViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeUiStateDosen(isLoading = true)
+            initialValue = HomeUiStateDosen(isLoading = true) // Initial state is loading
         )
 
+    // StateFlow for MataKuliah data
     val homeUiStateMataKuliah: StateFlow<HomeUiStateMataKuliah> = repositoryMataKuliah.getAllMataKuliah()
-        .filterNotNull()
+        .filterNotNull() // Ensure non-null data is emitted
         .map {
             HomeUiStateMataKuliah(
                 listMataKuliah = it.toList(),
@@ -61,8 +58,8 @@ class HomeProTIViewModel(
             )
         }
         .onStart {
-            emit(HomeUiStateMataKuliah(isLoading = true))
-            delay(900)
+            emit(HomeUiStateMataKuliah(isLoading = true)) // Emit loading state initially
+            delay(500) // Optional: Delay for loading indicator (adjust as needed)
         }
         .catch { throwable ->
             emit(
@@ -76,10 +73,11 @@ class HomeProTIViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeUiStateMataKuliah(isLoading = true)
+            initialValue = HomeUiStateMataKuliah(isLoading = true) // Initial state is loading
         )
 }
 
+// UI State data classes for Dosen and Mata Kuliah
 data class HomeUiStateDosen(
     val listDosen: List<Dosen> = listOf(),
     val isLoading: Boolean = false,
@@ -93,4 +91,3 @@ data class HomeUiStateMataKuliah(
     val isError: Boolean = false,
     val errorMessage: String = ""
 )
-
