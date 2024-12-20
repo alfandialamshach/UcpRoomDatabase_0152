@@ -1,46 +1,18 @@
 package com.example.pertemuan12.ui.view.MataKuliah
 
-
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Insert
+import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.ui.Navigation.Alamatnavigasi
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.FormErrorStateMataKuliah
@@ -48,65 +20,62 @@ import com.example.pertemuan12.ui.viewmodel.MataKuliahEvent
 import com.example.pertemuan12.ui.viewmodel.MataKuliahUIState
 import com.example.pertemuan12.ui.viewmodel.MataKuliahViewModel
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
-
-
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 
 object DestinasiTambah : Alamatnavigasi {
     override val route: String = "tambah_matakuliah"
 }
+
 @Composable
 fun InsertMataKuliahView(
     onBack: () -> Unit,
     onNavigate: () -> Unit,
-    modifier: Modifier =Modifier,
-    viewModel: MataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),  // Inisialisasi View Model
+    modifier: Modifier = Modifier,
+    viewModel: MataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory)
+) {
+    val uiStateMataKuliah = viewModel.uiStateMataKuliah // Get UI state from ViewModel
 
-){
-    val  uiState = viewModel.uiStateMataKuliah // Ambil UI state dari view model
-    val snackbarHostState = remember { SnackbarHostState() } //snackbar state
+    val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Obesrvasi perubahan snackbarMessage
-    LaunchedEffect(uiState.snackBarMessageMataKuliah) {
-        uiState.snackBarMessageMataKuliah?.let { message ->
+    // Observe snackbarMessage changes
+    LaunchedEffect(uiStateMataKuliah.snackBarMessageMataKuliah) {
+        uiStateMataKuliah.snackBarMessageMataKuliah?.let { message ->
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(message) // Tampilkan Snackbar
-                viewModel.resetSnackBarMessageMataKuliah()
+                snackbarHostState.showSnackbar(message) // Show Snackbar
+                viewModel.resetSnackBarMessageMataKuliah() // Reset message
             }
         }
     }
+
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState)} //tempatkan snackbar di scaffold
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) } // Show snackbar in scaffold
     ) { padding ->
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
-        ){
+        ) {
             CustomTopAppBar(
                 onBack = onBack,
                 showBackButton = true,
-                judul = "Tambah Mahasiswa"
+                judul = "Tambah Mata Kuliah"
             )
-            // Isi Body
-            InsertBodyMataKuliah (
-                uiState = uiState,
-                onValueChange = {updateEvent ->
-                    viewModel.updateStatematakuliah(updateEvent) // Update event di view model
-                },
+            // Body of the form
+            InsertBodyMataKuliah(
+                uiState = uiStateMataKuliah,
+                onValueChange = { updateEvent -> viewModel.updateStateMataKuliah(updateEvent) },
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveDataMataKuliah() // simpan data
+                        viewModel.saveDataMataKuliah() // Save data
                     }
-                    onNavigate()
-                }
+                    onNavigate() // Navigate after save
+                },
+                dosenList = uiStateMataKuliah.dosenList // Pass the list of dosen
             )
         }
-
     }
 }
 
@@ -115,19 +84,22 @@ fun InsertBodyMataKuliah(
     modifier: Modifier = Modifier,
     onValueChange: (MataKuliahEvent) -> Unit,
     uiState: MataKuliahUIState,
-    onClick: () -> Unit
-){
+    onClick: () -> Unit,
+    dosenList: List<Dosen>
+) {
     Column(
-        modifier= Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FormMataKuliah (
+        FormMataKuliah(
             mataKuliahEvent = uiState.mataKuliahEvent,
             onValueChange = onValueChange,
             errorState = uiState.isEntryValid,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            dosenList = dosenList // Pass the dosenList to FormMataKuliah
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
@@ -136,6 +108,7 @@ fun InsertBodyMataKuliah(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormMataKuliah(
@@ -143,23 +116,22 @@ fun FormMataKuliah(
     onValueChange: (MataKuliahEvent) -> Unit,
     errorState: FormErrorStateMataKuliah = FormErrorStateMataKuliah(),
     modifier: Modifier = Modifier,
-    dosenList: List<String> = listOf("Dosen A", "Dosen B", "Dosen C") // Contoh daftar dosen
+    dosenList: List<Dosen>,
 ) {
-    var chosenDropdown by remember { mutableStateOf("") }
+    var chosenDropdown by remember { mutableStateOf(mataKuliahEvent.dosenPengampu) } // Default to the current value
     var expanded by remember { mutableStateOf(false) }
+
+    val jenisPeminatan = listOf("Peminatan", "Wajib")
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // TextField untuk kode
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.kode,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(kode = it))
-            },
+            onValueChange = { onValueChange(mataKuliahEvent.copy(kode = it)) },
             label = { Text("Kode Mata Kuliah") },
             isError = errorState.kode != null,
             placeholder = { Text("Masukkan Kode Mata Kuliah") }
@@ -168,74 +140,71 @@ fun FormMataKuliah(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TextField untuk kode
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.nama,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(nama = it))
-            },
-            label = { Text("Kode Mata Kuliah") },
+            onValueChange = { onValueChange(mataKuliahEvent.copy(nama = it)) },
+            label = { Text("Nama Mata Kuliah") },
             isError = errorState.nama != null,
-            placeholder = { Text("Masukkan Kode Mata Kuliah") }
+            placeholder = { Text("Masukkan Nama Mata Kuliah") }
         )
         Text(text = errorState.nama ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TextField untuk kode
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.sks,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(sks = it))
-            },
-            label = { Text("Kode Mata Kuliah") },
+            onValueChange = { onValueChange(mataKuliahEvent.copy(sks = it)) },
+            label = { Text("Nama Mata Kuliah") },
             isError = errorState.sks != null,
-            placeholder = { Text("Masukkan Kode Mata Kuliah") }
+            placeholder = { Text("Masukkan Nama Mata Kuliah") }
         )
         Text(text = errorState.sks ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TextField untuk kode
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.semester,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(semester = it))
-            },
-            label = { Text("Kode Mata Kuliah") },
+            onValueChange = { onValueChange(mataKuliahEvent.copy(semester = it)) },
+            label = { Text("Nama Mata Kuliah") },
             isError = errorState.semester != null,
-            placeholder = { Text("Masukkan Kode Mata Kuliah") }
+            placeholder = { Text("Masukkan Nama Mata Kuliah") }
         )
         Text(text = errorState.semester ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TextField untuk kode
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = mataKuliahEvent.jenisMataKulih,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(jenisMataKulih = it))
-            },
-            label = { Text("Kode Mata Kuliah") },
-            isError = errorState.jenisMataKulih != null,
-            placeholder = { Text("Masukkan Kode Mata Kuliah") }
-        )
-        Text(text = errorState.jenisMataKulih ?: "", color = Color.Red)
+        Text(text = "Jenis Kelamin")
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ){
+            jenisPeminatan.forEach{jp ->
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    RadioButton(
+                        selected = mataKuliahEvent.jenisMataKulih == jp,
+                        onClick = {
+                            onValueChange(mataKuliahEvent.copy(jenisMataKulih = jp))
+                        },
+                    )
+                    Text(
+                        text = jp,
+                    )
+                }
+            }
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Dropdown untuk memilih dosen
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
                 value = chosenDropdown,
-                onValueChange = { /* Tidak bisa diubah manual */ },
+                onValueChange = { /* Cannot be changed manually */ },
                 label = { Text("Pilih Dosen Pengampu") },
                 trailingIcon = {
                     Icon(
@@ -255,17 +224,15 @@ fun FormMataKuliah(
                 dosenList.forEach { dosen ->
                     DropdownMenuItem(
                         onClick = {
-                            chosenDropdown = dosen
+                            chosenDropdown = dosen.nama
                             expanded = false
-                            onValueChange(mataKuliahEvent.copy(dosenPengampu = dosen))
+                            onValueChange(mataKuliahEvent.copy(dosenPengampu = dosen.nama))
                         },
-                        text = { Text(text = dosen) }
+                        text = { Text(text = dosen.nama) }
                     )
                 }
             }
         }
-
-        // Pesan error untuk dosen
         Text(text = errorState.dosenPengampu ?: "", color = Color.Red)
     }
 }
