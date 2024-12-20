@@ -122,7 +122,7 @@ fun InsertBodyMataKuliah(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FormMahasiswa (
+        FormMataKuliah (
             mataKuliahEvent = uiState.mataKuliahEvent,
             onValueChange = onValueChange,
             errorState = uiState.isEntryValid,
@@ -138,7 +138,7 @@ fun InsertBodyMataKuliah(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormMahasiswa(
+fun FormMataKuliah(
     mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     onValueChange: (MataKuliahEvent) -> Unit,
     errorState: FormErrorStateMataKuliah = FormErrorStateMataKuliah(),
