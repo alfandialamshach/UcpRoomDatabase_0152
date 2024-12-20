@@ -7,7 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.entity.MataKuliah
+import com.example.pertemuan12.repository.RepositoryDosen
 import com.example.pertemuan12.repository.RepositoryMataKuliah
 import com.example.pertemuan12.ui.Navigation.DestinasiUpdateMataKuliah
 
@@ -17,76 +19,98 @@ import kotlinx.coroutines.launch
 
 class UpdateMataKuliahViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repositoryMataKuliah: RepositoryMataKuliah
+    private val repositoryMataKuliah: RepositoryMataKuliah,
+    private val repositoryDosen: RepositoryDosen
 ) : ViewModel() {
-
-    var updateUiState by mutableStateOf(MataKuliahUIState())
+    // Dosen List
+    var dosenList by mutableStateOf<List<Dosen>>(emptyList())
         private set
+
+    var updateUiStateMataKuliah by mutableStateOf(MataKuliahUIState())
+        private set
+
     private val _kode: String = checkNotNull(savedStateHandle[DestinasiUpdateMataKuliah.KODE])
 
     init {
-        viewModelScope.launch{
-            updateUiState = repositoryMataKuliah.getMataKuliah(_kode)
+        // Fetch Mata Kuliah Data by Kode
+        viewModelScope.launch {
+            updateUiStateMataKuliah = repositoryMataKuliah.getMataKuliah(_kode)
                 .filterNotNull()
                 .first()
                 .toUIStateMataKuliah()
         }
+
+        // Fetch Dosen from repository
+        viewModelScope.launch {
+            val dosenListFromRepo = repositoryDosen.getAllDosen().first() // Fetch Dosen
+            dosenList = dosenListFromRepo
+            updateUiStateMataKuliah = updateUiStateMataKuliah.copy(dosenList = dosenList) // Update UI state with dosenList
+        }
     }
-    fun updateState (mataKuliahEvent: MataKuliahEvent) {
-        updateUiState = updateUiState.copy(
-            mataKuliahEvent = mataKuliahEvent,
+
+    fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
+        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
+            // you can add additional state updates here if needed
         )
     }
 
     fun validateField(): Boolean {
-        val event = updateUiState.mataKuliahEvent
-        val errorState =FormErrorStateMataKuliah (
-            kode = if (event.kode.isNotEmpty()) null else "NIM Tidak boleh kosong",
+        val event = updateUiStateMataKuliah.mataKuliahEvent
+        val errorState = FormErrorStateMataKuliah(
+            kode = if (event.kode.isNotEmpty()) null else "Kode Tidak boleh kosong",
             nama = if (event.nama.isNotEmpty()) null else "Nama Tidak boleh kosong",
-            sks = if (event.sks.isNotEmpty()) null else "Jenis Kelamin Tidak boleh kosong",
-            semester = if (event.semester.isNotEmpty()) null else "Alamat Tidak boleh kosong",
-            jenisMataKulih = if (event.jenisMataKulih.isNotEmpty()) null else "Kelas Tidak boleh kosong",
-            dosenPengampu = if (event.dosenPengampu.isNotEmpty()) null else "Angkatan Tidak boleh kosong"
+            sks = if (event.sks.isNotEmpty()) null else "SKS Tidak boleh kosong",
+            semester = if (event.semester.isNotEmpty()) null else "Semester Tidak boleh kosong",
+            jenisMataKulih = if (event.jenisMataKulih.isNotEmpty()) null else "Jenis Mata Kuliah Tidak boleh kosong",
+            dosenPengampu = if (event.dosenPengampu.isNotEmpty()) null else "Dosen Pengampu Tidak boleh kosong"
         )
 
-        updateUiState = updateUiState.copy(isEntryValid = errorState)
+        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(isEntryValid = errorState)
         return errorState.isValid()
     }
 
-    fun updateData() {
-        val  currentEvent = updateUiState.mataKuliahEvent
+    fun updateDataMataKuliah() {
+        val currentEvent = updateUiStateMataKuliah.mataKuliahEvent
 
         if (validateField()) {
             viewModelScope.launch {
                 try {
+                    // Update data MataKuliah
                     repositoryMataKuliah.updateMataKuliah(currentEvent.toMataKuliahEntity())
-                    updateUiState = updateUiState.copy(
+
+                    // Re-fetch data after update
+                    val updatedMataKuliah = repositoryMataKuliah.getMataKuliah(currentEvent.kode)
+                        .filterNotNull()
+                        .first()
+
+                    // Update UI state with the latest data
+                    updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
                         snackBarMessageMataKuliah = "Data Berhasil Diupdate",
-                        mataKuliahEvent = MataKuliahEvent(),
+                        mataKuliahEvent = updatedMataKuliah.toDetailUiEvent(), // Update event with the latest data
                         isEntryValid = FormErrorStateMataKuliah()
                     )
-                    println("snackBarMessage diatur: ${updateUiState.snackBarMessageMataKuliah}")
-                }catch (e: Exception) {
-                    updateUiState =updateUiState.copy(
-                        snackBarMessageMataKuliah = "Data gaga; diupdate"
+
+                    // Log for debugging
+                    println("snackBarMessage diatur: ${updateUiStateMataKuliah.snackBarMessageMataKuliah}")
+                } catch (e: Exception) {
+                    updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
+                        snackBarMessageMataKuliah = "Data gagal diupdate"
                     )
                 }
             }
-            fun  resetSnackBarMessage(){
-                updateUiState = updateUiState.copy(snackBarMessageMataKuliah = null)
-            }
         } else {
-            updateUiState = updateUiState.copy(
-                snackBarMessageMataKuliah = " Data gagal diupdate"
+            updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
+                snackBarMessageMataKuliah = "Data gagal diupdate"
             )
         }
     }
 
-    fun resetSnackBarMessage(){
-        updateUiState = updateUiState.copy(snackBarMessageMataKuliah = null)
+    fun resetSnackBarMessage() {
+        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
     }
-
 }
-fun MataKuliah.toUIStateMataKuliah() : MataKuliahUIState = MataKuliahUIState(
-    mataKuliahEvent = this.toDetailUiEvent()  ,
+
+// Convert MataKuliah to UI State
+fun MataKuliah.toUIStateMataKuliah(): MataKuliahUIState = MataKuliahUIState(
+    mataKuliahEvent = this.toDetailUiEvent() // Convert MataKuliah to UI Event
 )
