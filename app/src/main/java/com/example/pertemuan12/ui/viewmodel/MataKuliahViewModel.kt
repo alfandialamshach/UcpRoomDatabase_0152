@@ -1,7 +1,7 @@
 package com.example.pertemuan12.ui.viewmodel
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,93 +11,109 @@ import com.example.pertemuan12.repository.RepositoryDosen
 import com.example.pertemuan12.repository.RepositoryMataKuliah
 import kotlinx.coroutines.launch
 
-class MataKuliahViewModel (private  val repositoryMataKuliah: RepositoryMataKuliah, private val repositoryDosen: RepositoryDosen) : ViewModel(){
+// ViewModel for MataKuliah
+class MataKuliahViewModel(
+    private val repositoryMataKuliah: RepositoryMataKuliah,
+    private val repositoryDosen: RepositoryDosen
+) : ViewModel() {
 
+    // UI State for MataKuliah
     var uiStateMataKuliah by mutableStateOf(MataKuliahUIState())
+        private set
 
-    // Daftar mata kuliah yang akan ditampilkan di UI
+    // MataKuliah List
     var mataKuliahList by mutableStateOf<List<MataKuliah>>(emptyList())
         private set
 
+    // Dosen List
+    var dosenList by mutableStateOf<List<Dosen>>(emptyList())
+        private set
+
     init {
-        // Ambil daftar mata kuliah dari repository
+        // Fetch MataKuliah from repository
         viewModelScope.launch {
             repositoryMataKuliah.getAllMataKuliah().collect { mataKuliahList ->
                 this@MataKuliahViewModel.mataKuliahList = mataKuliahList
             }
         }
-    }
 
-    // Daftar dosen yang bisa dipilih
-    var dosenList by mutableStateOf<List<Dosen>>(emptyList())
-
-    // Inisialisasi untuk mengambil data dosen
-    init {
-        // Ambil daftar dosen dari repository dengan mengumpulkan data Flow
+        // Fetch Dosen from repository
         viewModelScope.launch {
             repositoryDosen.getAllDosen().collect { dosenList ->
-                this@MataKuliahViewModel.dosenList = dosenList // Menyimpan hasil collect ke dalam dosenList
+                this@MataKuliahViewModel.dosenList = dosenList
+                updateUiState() // Update UI State after fetching Dosen
             }
         }
     }
-    // Memperbarui state berdasarkan input pengguna
-    fun updateStatematakuliah(mataKuliahEvent: MataKuliahEvent){
+
+    // Update the state for MataKuliah input fields
+    fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
         uiStateMataKuliah = uiStateMataKuliah.copy(
-            mataKuliahEvent = mataKuliahEvent,
+            mataKuliahEvent = mataKuliahEvent
         )
     }
-    //validasi data input pengguna
-    private fun validateFields(): Boolean{
+
+    // Validate input fields for MataKuliah
+    private fun validateFields(): Boolean {
         val eventMataKuliah = uiStateMataKuliah.mataKuliahEvent
         val errorStateMatakuliah = FormErrorStateMataKuliah(
-            kode = if (eventMataKuliah.kode.isNotEmpty()) null else "NIM tidak boleh kosong",
+            kode = if (eventMataKuliah.kode.isNotEmpty()) null else "Kode tidak boleh kosong",
             nama = if (eventMataKuliah.nama.isNotEmpty()) null else "Nama tidak boleh kosong",
-            sks = if (eventMataKuliah.sks.isNotEmpty()) null else "Jenis Kelamin tidak boleh kosong",
-            semester = if (eventMataKuliah.semester.isNotEmpty()) null else "Alamat tidak boleh kosong",
-            jenisMataKulih = if (eventMataKuliah.jenisMataKulih.isNotEmpty()) null else "Alamat tidak boleh kosong",
-            dosenPengampu = if (eventMataKuliah.dosenPengampu.isNotEmpty()) null else "Alamat tidak boleh kosong"
+            sks = if (eventMataKuliah.sks.isNotEmpty()) null else "SKS tidak boleh kosong",
+            semester = if (eventMataKuliah.semester.isNotEmpty()) null else "Semester tidak boleh kosong",
+            jenisMataKulih = if (eventMataKuliah.jenisMataKulih.isNotEmpty()) null else "Jenis Mata Kuliah tidak boleh kosong",
+            dosenPengampu = if (eventMataKuliah.dosenPengampu.isNotEmpty()) null else "Dosen Pengampu tidak boleh kosong"
         )
+
         uiStateMataKuliah = uiStateMataKuliah.copy(isEntryValid = errorStateMatakuliah)
         return errorStateMatakuliah.isValid()
     }
 
-    //Menyimpan data ke repository
+    // Save MataKuliah data to repository
     fun saveDataMataKuliah() {
         val currentEventMataKuliah = uiStateMataKuliah.mataKuliahEvent
-        if (validateFields()){
+        if (validateFields()) {
             viewModelScope.launch {
                 try {
                     repositoryMataKuliah.insertMataKuliah(currentEventMataKuliah.toMataKuliahEntity())
                     uiStateMataKuliah = uiStateMataKuliah.copy(
-                        snackBarMessageMataKuliah = "Data Berhasil disimpan",
-                        mataKuliahEvent = MataKuliahEvent(), // Reset Input form
-                        isEntryValid = FormErrorStateMataKuliah() // Reset Error State
+                        snackBarMessageMataKuliah = "Data berhasil disimpan",
+                        mataKuliahEvent = MataKuliahEvent(), // Reset form
+                        isEntryValid = FormErrorStateMataKuliah() // Reset error state
                     )
                 } catch (e: Exception) {
-                    uiStateMataKuliah =uiStateMataKuliah.copy(
-                        snackBarMessageMataKuliah = " Data gagal disimpan"
+                    uiStateMataKuliah = uiStateMataKuliah.copy(
+                        snackBarMessageMataKuliah = "Data gagal disimpan: ${e.message}"
                     )
                 }
             }
         } else {
             uiStateMataKuliah = uiStateMataKuliah.copy(
-                snackBarMessageMataKuliah = "Input tidak valid. Perikasa kembali dta anda"
+                snackBarMessageMataKuliah = "Input tidak valid. Periksa kembali data Anda"
             )
         }
     }
 
-    //Reset pesan snackbar setelah ditampilkan
+    // Reset snackbar message after it's displayed
     fun resetSnackBarMessageMataKuliah() {
         uiStateMataKuliah = uiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
     }
+
+    // Update UI state with Dosen list
+    private fun updateUiState() {
+        uiStateMataKuliah = uiStateMataKuliah.copy(dosenList = dosenList)
+    }
 }
 
+// UI State for MataKuliah
 data class MataKuliahUIState(
     val mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     val isEntryValid: FormErrorStateMataKuliah = FormErrorStateMataKuliah(),
-    val snackBarMessageMataKuliah:String?= null,
+    val snackBarMessageMataKuliah: String? = null,
+    val dosenList: List<Dosen> = emptyList()
 )
 
+// Error state for MataKuliah form validation
 data class FormErrorStateMataKuliah(
     val kode: String? = null,
     val nama: String? = null,
@@ -105,15 +121,14 @@ data class FormErrorStateMataKuliah(
     val semester: String? = null,
     val jenisMataKulih: String? = null,
     val dosenPengampu: String? = null
-
-
-){
+) {
     fun isValid(): Boolean {
         return kode == null && nama == null && sks == null &&
                 semester == null && jenisMataKulih == null && dosenPengampu == null
     }
 }
-//data class variabel yang menyimpan data input form
+
+// Data class to hold MataKuliah form input values
 data class MataKuliahEvent(
     val kode: String = "",
     val nama: String = "",
@@ -123,7 +138,7 @@ data class MataKuliahEvent(
     val dosenPengampu: String = ""
 )
 
-//menyimpan input form ke dalam entity
+// Extension function to convert MataKuliahEvent to MataKuliah entity
 fun MataKuliahEvent.toMataKuliahEntity(): MataKuliah = MataKuliah(
     kode = kode,
     nama = nama,
@@ -132,3 +147,4 @@ fun MataKuliahEvent.toMataKuliahEntity(): MataKuliah = MataKuliah(
     jenisMataKulih = jenisMataKulih,
     dosenPengampu = dosenPengampu
 )
+
