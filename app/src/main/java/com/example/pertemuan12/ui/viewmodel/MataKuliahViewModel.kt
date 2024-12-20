@@ -15,6 +15,19 @@ class MataKuliahViewModel (private  val repositoryMataKuliah: RepositoryMataKuli
 
     var uiStateMataKuliah by mutableStateOf(MataKuliahUIState())
 
+    // Daftar mata kuliah yang akan ditampilkan di UI
+    var mataKuliahList by mutableStateOf<List<MataKuliah>>(emptyList())
+        private set
+
+    init {
+        // Ambil daftar mata kuliah dari repository
+        viewModelScope.launch {
+            repositoryMataKuliah.getAllMataKuliah().collect { mataKuliahList ->
+                this@MataKuliahViewModel.mataKuliahList = mataKuliahList
+            }
+        }
+    }
+
     // Daftar dosen yang bisa dipilih
     var dosenList by mutableStateOf<List<Dosen>>(emptyList())
 
