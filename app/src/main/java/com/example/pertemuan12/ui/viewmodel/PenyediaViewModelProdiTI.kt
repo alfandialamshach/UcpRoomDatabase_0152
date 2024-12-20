@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pertemuan12.ProdiTIApp
+import com.example.pertemuan12.ui.view.Dosen.HomeDosenViewModel
+import com.example.pertemuan12.ui.view.MataKuliah.HomeMataKuliahViewModel
 
 
 object PenyediaViewModelProdiTI{
@@ -20,11 +22,35 @@ object PenyediaViewModelProdiTI{
             )
         }
 
-//        initializer {
-//            HomeProTIViewModel(
-//                ProdiTIApp().containerApp.repositoryMataKuliah
-//            )
-//        }
+        initializer {
+            DosenViewModel(
+                ProdiTIApp().containerApp.repositoryDosen // Pastikan repositoryDosen juga ada
+            )
+        }
+
+
+        initializer {
+            HomeMataKuliahViewModel(
+                ProdiTIApp().containerApp.repositoryMataKuliah,
+                ProdiTIApp().containerApp.repositoryDosen
+
+            // Pastikan repositoryDosen juga ada
+            )
+        }
+
+        initializer {
+            HomeDosenViewModel(
+                ProdiTIApp().containerApp.repositoryDosen // Pastikan repositoryDosen juga ada
+            )
+        }
+
+
+        initializer {
+            HomeProdiTIViewModel(
+                ProdiTIApp().containerApp.repositoryMataKuliah,
+                ProdiTIApp().containerApp.repositoryDosen
+            )
+        }
 
         initializer {
             DetailMataKuliahViewModel(
