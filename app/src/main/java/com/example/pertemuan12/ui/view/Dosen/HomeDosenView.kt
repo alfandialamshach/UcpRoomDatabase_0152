@@ -73,7 +73,7 @@ fun HomeDosenView(
     ){innerPadding ->
         val homeUiState by viewModel.homeUiState.collectAsState()
 
-        BodyHomeMhsView(
+        BodyHomeDosenView(
             homeUiState = homeUiState,
             onClick = {
                 onDetailClick(it)
@@ -85,7 +85,7 @@ fun HomeDosenView(
 }
 
 @Composable
-fun BodyHomeMhsView(
+fun BodyHomeDosenView(
     homeUiState: HomeUiStateDosen,
     onClick: (String) -> Unit = { },
     modifier: Modifier = Modifier
@@ -155,7 +155,7 @@ fun ListDosen(
         items(
     items = listDosen,
     itemContent = { dosen ->
-        CardMhs(
+        CardDosen(
             dosen = dosen,
 //            onClick = {} // Tidak melakukan apa-apa saat item diklik
         )
@@ -166,7 +166,7 @@ fun ListDosen(
 
 @OptIn (ExperimentalMaterial3Api::class)
 @Composable
-fun CardMhs(
+fun CardDosen(
     dosen: Dosen,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
