@@ -73,7 +73,7 @@ fun HomeMataKuliahView(
     ){innerPadding ->
         val homeUiState by viewModel.homeUiState.collectAsState()
 
-        BodyHomeMhsView(
+        BodyHomeMataKuliahView(
             homeUiState = homeUiState,
             onClick = {
                 onDetailClick(it)
@@ -85,7 +85,7 @@ fun HomeMataKuliahView(
 }
 
 @Composable
-fun BodyHomeMhsView(
+fun BodyHomeMataKuliahView(
     homeUiState: HomeUiState,
     onClick: (String) -> Unit = { },
     modifier: Modifier = Modifier
@@ -155,7 +155,7 @@ fun ListMataKuliah(
         items(
             items= listMataKuliah,
             itemContent = { matakuliah ->
-                CardMhs(
+                CardMataKuliah(
                     mataKuliah = matakuliah,
                     onClick = { onClick(matakuliah.kode)}
                 )
@@ -166,7 +166,7 @@ fun ListMataKuliah(
 
 @OptIn (ExperimentalMaterial3Api::class)
 @Composable
-fun CardMhs(
+fun CardMataKuliah(
     mataKuliah: MataKuliah,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
