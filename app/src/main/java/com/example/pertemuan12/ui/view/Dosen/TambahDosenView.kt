@@ -81,7 +81,7 @@ fun TambahDosenView(
                 judul = "Tambah Mahasiswa"
             )
             // Isi Body
-            InsertBodyMhs(
+            InsertBodyDosen(
                 uiState = uiState,
                 onValueChange = {updateEvent ->
                     viewModel.updateStateDosen(updateEvent) // Update event di view model
@@ -99,7 +99,7 @@ fun TambahDosenView(
 }
 
 @Composable
-fun InsertBodyMhs(
+fun InsertBodyDosen(
     modifier: Modifier = Modifier,
     onValueChange: (DosenEvent) -> Unit,
     uiState: DosenUIState,
@@ -110,7 +110,7 @@ fun InsertBodyMhs(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FormMahasiswa (
+        FormDosen (
             dosenEvent = uiState.dosenEvent,
             onValueChange = onValueChange,
             errorState = uiState.isEntryValid,
@@ -125,7 +125,7 @@ fun InsertBodyMhs(
     }
 }
 @Composable
-fun FormMahasiswa(
+fun FormDosen(
     dosenEvent: DosenEvent = DosenEvent(),
     onValueChange: (DosenEvent) -> Unit,
     errorState: FormErrorStateDosen = FormErrorStateDosen(),
