@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Insert
 import com.example.pertemuan12.ui.Navigation.Alamatnavigasi
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.DosenEvent
 import com.example.pertemuan12.ui.viewmodel.DosenUIState
@@ -45,18 +46,21 @@ object DestinasiTambahDosen : Alamatnavigasi {
     override val route: String = "Tambah_Dosen"
 }
 @Composable
-fun TambahDosenView(
-    onBack: () -> Unit,
-    onNavigate: () -> Unit,
-    modifier: Modifier =Modifier,
-    viewModel: DosenViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),  // Inisialisasi View Model
 
-){
-    val  uiState = viewModel.uiStateDosen // Ambil UI state dari view model
-    val snackbarHostState = remember { SnackbarHostState() } //snackbar state
+fun TambahDosenView(
+    onNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    viewModel: DosenViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),  // Inisialisasi View Model
+) {
+    val uiState = viewModel.uiStateDosen // Ambil UI state dari view model
+    val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
     val coroutineScope = rememberCoroutineScope()
 
-    // Obesrvasi perubahan snackbarMessage
+    // Observasi perubahan snackbarMessage
     LaunchedEffect(uiState.snackBarMessage) {
         uiState.snackBarMessage?.let { message ->
             coroutineScope.launch {
@@ -65,38 +69,49 @@ fun TambahDosenView(
             }
         }
     }
+
     Scaffold(
-        modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState)} //tempatkan snackbar di scaffold
+        modifier = modifier.padding(16.dp),
+
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, // Tempatkan snackbar di scaffold
+        bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        }
     ) { padding ->
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
-        ){
+        ) {
+            // Top App Bar di atas
             CustomTopAppBar(
-                onBack = onBack,
-//                showBackButton = true,
+                onDosenClick = onDosenClick,
+                onMataKuliahClick = onMataKuliahClick,
                 judul = "Tambah Mahasiswa"
             )
+
             // Isi Body
             InsertBodyDosen(
                 uiState = uiState,
-                onValueChange = {updateEvent ->
+                onValueChange = { updateEvent ->
                     viewModel.updateStateDosen(updateEvent) // Update event di view model
                 },
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveData() // simpan data
+                        viewModel.saveData() // Simpan data
                     }
                     onNavigate()
                 }
             )
         }
-
     }
 }
+
+
 
 @Composable
 fun InsertBodyDosen(
@@ -117,7 +132,7 @@ fun InsertBodyDosen(
             modifier = Modifier.fillMaxWidth()
         )
         Button(
-            onClick = onClick,
+            onClick = {onClick()},
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Simpan")
@@ -157,26 +172,13 @@ fun FormDosen(
             value = dosenEvent.nidn, onValueChange = {
                 onValueChange(dosenEvent.copy( nidn = it))
             },
-            label = { Text("NIM")},
+            label = { Text("NIDN")},
             isError = errorState.nidn != null,
-            placeholder = { Text("Masukkan NIM")},
+            placeholder = { Text("Masukkan NIDN")},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Text(text = errorState.nidn ?: "", color = Color.Red)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = dosenEvent.alamat, onValueChange = {
-                onValueChange(dosenEvent.copy( alamat = it))
-            },
-            label = { Text("NIM")},
-            isError = errorState.alamat != null,
-            placeholder = { Text("Masukkan NIM")},
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        Text(text = errorState.alamat ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Jenis Kelamin")
