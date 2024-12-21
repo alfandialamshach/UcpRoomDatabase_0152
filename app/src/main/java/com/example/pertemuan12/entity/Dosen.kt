@@ -9,6 +9,5 @@ data class Dosen(
     @PrimaryKey
     val nidn: String,
     val nama: String,
-    val alamat: String,
     val jenisKelamin: String,
 )
