@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Delete
 import com.example.pertemuan12.entity.MataKuliah
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.DetailMataKuliahViewModel
 import com.example.pertemuan12.ui.viewmodel.DetailUiState
@@ -51,15 +52,25 @@ fun DetailMataKuliahView(
     viewModel: DetailMataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),
     onBack: () -> Unit = { },
     onEditClick: (String) -> Unit = { },
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
     onDeleteClick: () -> Unit = { }
 ){
     Scaffold(
         modifier = modifier.padding(16.dp),
+        bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        },
         topBar = {
             CustomTopAppBar(
                 judul = "Detail MataKuliah",
-//                showBackButton = true,
-                onBack = onBack,
+                onDosenClick = onDosenClick,
+                onMataKuliahClick =onMataKuliahClick,
                 modifier = modifier
             )
         },
