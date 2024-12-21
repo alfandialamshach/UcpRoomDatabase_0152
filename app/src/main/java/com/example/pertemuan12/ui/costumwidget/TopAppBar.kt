@@ -1,18 +1,12 @@
 package com.example.pertemuan12.ui.costumwidget
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,39 +14,52 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CustomTopAppBar(
-    onBack: () -> Unit,
-    showBackButton: Boolean = true,
+    onBack: (() -> Unit)? = null, // Nullable untuk opsi tanpa tombol kembali
     judul: String,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clip(shape =  RoundedCornerShape(bottomEnd = 80f)).background(Color.Blue),
-        contentAlignment = Alignment.Center // Pastikan konten di tengah
+            .background(Color(0xFF2196F3)) // Warna latar belakang biru
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        if (showBackButton) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Tombol Kembali, jika `onBack` tidak null
+            if (onBack != null) {
                 TextButton(
                     onClick = onBack,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
-                    Text("Kembali")
+                    Text(
+                        "Kembali",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-                Spacer(modifier = Modifier.weight(2f))
+            } else {
+                Spacer(modifier = Modifier.width(72.dp)) // Placeholder jika tidak ada tombol kembali
             }
-        }
 
-        // Teks judul
-        Text(
-            text = judul,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Center)
-        )
+            Spacer(modifier = Modifier.weight(1f)) // Spasi untuk menjadikan judul di tengah
+
+            // Judul Halaman
+            Text(
+                text = judul,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+
+            Spacer(modifier = Modifier.weight(1f)) // Spasi untuk keseimbangan tata letak
+        }
     }
 }
