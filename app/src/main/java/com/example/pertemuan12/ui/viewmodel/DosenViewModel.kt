@@ -24,7 +24,7 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
 
 
     //validasi data input pengguna
-    private fun validateFieldsDosen(): Boolean{
+     fun validateFieldsDosen(): Boolean{
         val event = uiStateDosen.dosenEvent
         val errorState = FormErrorStateDosen(
             nidn = if (event.nidn.isNotEmpty()) null else "Nama tidak boleh kosong",
