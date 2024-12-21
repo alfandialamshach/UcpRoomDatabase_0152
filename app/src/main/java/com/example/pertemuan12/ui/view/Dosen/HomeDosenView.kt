@@ -49,11 +49,14 @@ fun HomeDosenView(
     onBack: () -> Unit,
     modifier : Modifier = Modifier
 ) {
+
     Scaffold (
+        modifier = modifier.padding(16.dp),
+
         topBar = {
             CustomTopAppBar(
                 judul = "Daftar Mahasiswa",
-                showBackButton = true,
+//                showBackButton = true,
                 onBack = onBack,
 
             )
@@ -70,7 +73,8 @@ fun HomeDosenView(
                 )
             }
         }
-    ){innerPadding ->
+    )
+    {innerPadding ->
         val homeUiState by viewModel.homeUiState.collectAsState()
 
         BodyHomeDosenView(
