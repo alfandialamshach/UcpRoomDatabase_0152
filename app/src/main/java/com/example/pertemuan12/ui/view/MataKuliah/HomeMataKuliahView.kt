@@ -51,10 +51,11 @@ fun HomeMataKuliahView(
     modifier : Modifier = Modifier
 ) {
     Scaffold (
+        modifier = modifier.padding(16.dp),
         topBar = {
             CustomTopAppBar(
                 judul = "Daftar Mahasiswa",
-                showBackButton = true,
+//                showBackButton = true,
                 onBack = onBack,
             )
         },
