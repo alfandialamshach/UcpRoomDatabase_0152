@@ -48,7 +48,7 @@ fun UpdateMataKuliahView(
         topBar = {
             CustomTopAppBar(
                 judul = "Edit Mata Kuliah", // Title for Update page
-                showBackButton = true,
+//                showBackButton = true,
                 onBack = onBack // Back button functionality
             )
         }
@@ -62,13 +62,12 @@ fun UpdateMataKuliahView(
             // Form for Mata Kuliah update
             InsertBodyMataKuliah(
                 uiState = uiStateMataKuliah,
-                onValueChange = { updateEvent ->
-                    viewModel.updateStateMataKuliah(updateEvent) // Update state in ViewModel
+                onValueChange = { updateEvent -> viewModel.updateStateMataKuliah(updateEvent)// Update state in ViewModel
                 },
                 onClick = {
                     coroutineScope.launch {
                         if (viewModel.validateField()) { // Validate before updating
-                            viewModel.updateDataMataKuliah() // Perform the update operation
+                            viewModel.updateData() // Perform the update operation
                             delay(600) // Optional delay for UI effect
                             withContext(Dispatchers.Main) {
                                 onNavigate() // Navigate after data is updated (main thread)
