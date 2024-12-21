@@ -1,5 +1,6 @@
 package com.example.pertemuan12.ui.view.Dosen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +12,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,50 +36,68 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.entity.Dosen
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
 
 import kotlinx.coroutines.launch
 
 @Composable
+
 fun HomeDosenView(
     viewModel: HomeDosenViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),
     onAddMhs: () -> Unit = { },
     onDetailClick: (String) -> Unit = { },
-    onBack: () -> Unit,
-    modifier : Modifier = Modifier
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    Scaffold (
+    Scaffold(
         modifier = modifier.padding(16.dp),
-
+        bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        },
         topBar = {
             CustomTopAppBar(
-                judul = "Daftar Mahasiswa",
-//                showBackButton = true,
-                onBack = onBack,
-
+                judul = "Daftar Dosen ProdiTI",
+//                onBack = onBack
+                onDosenClick = onDosenClick,
+                onMataKuliahClick =onMataKuliahClick
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddMhs,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp), // Tambahkan jarak dari bawah
+                horizontalArrangement = Arrangement.Center, // Posisikan di tengah horizontal
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Mahasiswa",
-                )
+//
+                FloatingActionButton(
+                    onClick = onAddMhs,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.padding(start = 16.dp) // Beri jarak antar FAB
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Tambah Dosen",
+                    )
+                }
             }
         }
-    )
-    {innerPadding ->
+    ) { innerPadding ->
         val homeUiState by viewModel.homeUiState.collectAsState()
 
         BodyHomeDosenView(
@@ -84,9 +107,9 @@ fun HomeDosenView(
             },
             modifier = Modifier.padding(innerPadding)
         )
-
     }
 }
+
 
 @Composable
 fun BodyHomeDosenView(
@@ -123,7 +146,7 @@ fun BodyHomeDosenView(
                 contentAlignment = Alignment.Center
             ){
                 Text(
-                    text = "Tidak ada data mahasiswa",
+                    text = "Tidak ada data Dosen",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
