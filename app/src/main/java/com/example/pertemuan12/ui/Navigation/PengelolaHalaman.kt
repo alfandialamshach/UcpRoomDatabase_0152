@@ -1,5 +1,6 @@
 package com.example.pertemuan12.ui.Navigation
 
+import HomeView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -8,8 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.pertemuan12.ui.home.DestinasiHome
-import com.example.pertemuan12.ui.home.HomeView
+
 import com.example.pertemuan12.ui.view.Dosen.DestinasiTambahDosen
 import com.example.pertemuan12.ui.view.Dosen.HomeDosenView
 import com.example.pertemuan12.ui.view.Dosen.TambahDosenView
