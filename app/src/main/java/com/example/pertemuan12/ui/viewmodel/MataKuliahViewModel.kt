@@ -54,7 +54,7 @@ class MataKuliahViewModel(
     }
 
     // Validate input fields for MataKuliah
-    private fun validateFields(): Boolean {
+    fun validateFieldsTambah(): Boolean {
         val eventMataKuliah = uiStateMataKuliah.mataKuliahEvent
         val errorStateMatakuliah = FormErrorStateMataKuliah(
             kode = if (eventMataKuliah.kode.isNotEmpty()) null else "Kode tidak boleh kosong",
@@ -65,34 +65,48 @@ class MataKuliahViewModel(
             dosenPengampu = if (eventMataKuliah.dosenPengampu.isNotEmpty()) null else "Dosen Pengampu tidak boleh kosong"
         )
 
+        // Update state untuk error message
         uiStateMataKuliah = uiStateMataKuliah.copy(isEntryValid = errorStateMatakuliah)
+
+        // Pastikan form valid jika tidak ada pesan error
         return errorStateMatakuliah.isValid()
     }
+
 
     // Save MataKuliah data to repository
     fun saveDataMataKuliah() {
         val currentEventMataKuliah = uiStateMataKuliah.mataKuliahEvent
-        if (validateFields()) {
+
+        // Validasi form sebelum menyimpan
+        if (validateFieldsTambah()) {
+
+            // Jika validasi sukses, simpan data ke repository
             viewModelScope.launch {
                 try {
+                    // Menyimpan data ke repository
                     repositoryMataKuliah.insertMataKuliah(currentEventMataKuliah.toMataKuliahEntity())
+
+                    // Jika penyimpanan berhasil, reset form dan tampilkan pesan sukses
                     uiStateMataKuliah = uiStateMataKuliah.copy(
-                        snackBarMessageMataKuliah = "Data berhasil disimpan",
+                        snackBarMessageMataKuliah = "Data berhasil disimpan", // Pesan berhasil
                         mataKuliahEvent = MataKuliahEvent(), // Reset form
                         isEntryValid = FormErrorStateMataKuliah() // Reset error state
                     )
                 } catch (e: Exception) {
+                    // Jika terjadi error, tampilkan pesan error
                     uiStateMataKuliah = uiStateMataKuliah.copy(
                         snackBarMessageMataKuliah = "Data gagal disimpan: ${e.message}"
                     )
                 }
             }
         } else {
+            // Jika validasi gagal, tampilkan pesan error
             uiStateMataKuliah = uiStateMataKuliah.copy(
                 snackBarMessageMataKuliah = "Input tidak valid. Periksa kembali data Anda"
             )
         }
     }
+
 
     // Reset snackbar message after it's displayed
     fun resetSnackBarMessageMataKuliah() {
@@ -127,6 +141,7 @@ data class FormErrorStateMataKuliah(
                 semester == null && jenisMataKulih == null && dosenPengampu == null
     }
 }
+
 
 // Data class to hold MataKuliah form input values
 data class MataKuliahEvent(
