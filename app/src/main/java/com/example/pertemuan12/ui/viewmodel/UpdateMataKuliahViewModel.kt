@@ -48,10 +48,15 @@ class UpdateMataKuliahViewModel(
         }
     }
 
+//    fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
+//        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
+//            // you can add additional state updates here if needed
+//        )
+//    }
+
     fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
-        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
-            // you can add additional state updates here if needed
-        )
+        println("Update Event: $mataKuliahEvent")
+        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(mataKuliahEvent = mataKuliahEvent)
     }
 
     fun validateField(): Boolean {
@@ -69,38 +74,31 @@ class UpdateMataKuliahViewModel(
         return errorState.isValid()
     }
 
-    fun updateDataMataKuliah() {
-        val currentEvent = updateUiStateMataKuliah.mataKuliahEvent
+    fun updateData() {
+        val  currentEvent = updateUiStateMataKuliah.mataKuliahEvent
 
         if (validateField()) {
             viewModelScope.launch {
                 try {
-                    // Update data MataKuliah
                     repositoryMataKuliah.updateMataKuliah(currentEvent.toMataKuliahEntity())
-
-                    // Re-fetch data after update
-                    val updatedMataKuliah = repositoryMataKuliah.getMataKuliah(currentEvent.kode)
-                        .filterNotNull()
-                        .first()
-
-                    // Update UI state with the latest data
                     updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
                         snackBarMessageMataKuliah = "Data Berhasil Diupdate",
-                        mataKuliahEvent = updatedMataKuliah.toDetailUiEvent(), // Update event with the latest data
+                        mataKuliahEvent = MataKuliahEvent(),
                         isEntryValid = FormErrorStateMataKuliah()
                     )
-
-                    // Log for debugging
                     println("snackBarMessage diatur: ${updateUiStateMataKuliah.snackBarMessageMataKuliah}")
-                } catch (e: Exception) {
-                    updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
-                        snackBarMessageMataKuliah = "Data gagal diupdate"
+                }catch (e: Exception) {
+                    updateUiStateMataKuliah =updateUiStateMataKuliah.copy(
+                        snackBarMessageMataKuliah = "Data gaga; diupdate"
                     )
                 }
             }
+            fun  resetSnackBarMessage(){
+                updateUiStateMataKuliah = updateUiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
+            }
         } else {
             updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
-                snackBarMessageMataKuliah = "Data gagal diupdate"
+                snackBarMessageMataKuliah = " Data gagal diupdate"
             )
         }
     }
