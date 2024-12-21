@@ -1,6 +1,7 @@
 package com.example.pertemuan12.ui.view.MataKuliah
 
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,11 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.entity.MataKuliah
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
 
@@ -47,28 +52,48 @@ fun HomeMataKuliahView(
     viewModel: HomeMataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),
     onAddMhs: () -> Unit = { },
     onDetailClick: (String) -> Unit = { },
-    onBack: () -> Unit,
+    onDosenClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
+
+    onMataKuliahClick: () -> Unit,
     modifier : Modifier = Modifier
 ) {
     Scaffold (
         modifier = modifier.padding(16.dp),
+        bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        },
         topBar = {
             CustomTopAppBar(
-                judul = "Daftar Mahasiswa",
-//                showBackButton = true,
-                onBack = onBack,
+                judul = "Daftar MaataKuliah ProdiTI",
+                onDosenClick = onDosenClick,
+                onMataKuliahClick =onMataKuliahClick,
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddMhs,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp), // Tambahkan jarak dari bawah
+                horizontalArrangement = Arrangement.Center, // Posisikan di tengah horizontal
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Mahasiswa",
-                )
+
+                FloatingActionButton(
+                    onClick = onAddMhs,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.padding(start = 16.dp) // Beri jarak antar FAB
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Tambah MataKuliah",
+                    )
+                }
             }
         }
     ){innerPadding ->
@@ -120,7 +145,7 @@ fun BodyHomeMataKuliahView(
                 contentAlignment = Alignment.Center
             ){
                 Text(
-                    text = "Tidak ada data mahasiswa",
+                    text = "Tidak ada data matakuliah",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
