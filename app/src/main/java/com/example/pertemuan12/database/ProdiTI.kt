@@ -31,7 +31,7 @@ abstract class ProdiTI : RoomDatabase() {
                 Room.databaseBuilder(
                     context.applicationContext,
                     ProdiTI::class.java, // Class database
-                    "ProdiTIDatabase" // Nama database
+                    "ProdiTI" // Nama database
                 )
                     .build()
                     .also { INSTANCE = it }
