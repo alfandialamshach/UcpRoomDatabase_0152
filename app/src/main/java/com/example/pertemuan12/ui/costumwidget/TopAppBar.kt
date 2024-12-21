@@ -2,9 +2,10 @@ package com.example.pertemuan12.ui.costumwidget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,16 +15,20 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CustomTopAppBar(
-    onBack: (() -> Unit)? = null, // Nullable untuk opsi tanpa tombol kembali
     judul: String,
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // State untuk mengontrol apakah menu dropdown ditampilkan
+    var showMenu by remember { mutableStateOf(false) }
+
+    // Struktur TopAppBar
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xFF2196F3)) // Warna latar belakang biru
-            .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
+            .padding(vertical = 16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -31,35 +36,46 @@ fun CustomTopAppBar(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Tombol Kembali, jika `onBack` tidak null
-            if (onBack != null) {
-                TextButton(
-                    onClick = onBack,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        "Kembali",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+            // Tombol menu dropdown
+            Box {
+                IconButton(onClick = { showMenu = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        tint = Color.White
                     )
                 }
-            } else {
-                Spacer(modifier = Modifier.width(72.dp)) // Placeholder jika tidak ada tombol kembali
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Dosen") },
+                        onClick = {
+                            showMenu = false
+                            onDosenClick()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Mata Kuliah") },
+                        onClick = {
+                            showMenu = false
+                            onMataKuliahClick()
+                        }
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Spasi untuk menjadikan judul di tengah
+            Spacer(modifier = Modifier.weight(1f)) // Spasi untuk membuat judul berada di tengah
 
-            // Judul Halaman
+            // Judul halaman
             Text(
                 text = judul,
-                fontSize = 22.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                maxLines = 1
             )
-
-            Spacer(modifier = Modifier.weight(1f)) // Spasi untuk keseimbangan tata letak
         }
     }
 }
