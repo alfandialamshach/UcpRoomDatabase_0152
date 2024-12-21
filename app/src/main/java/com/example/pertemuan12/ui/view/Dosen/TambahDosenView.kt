@@ -39,8 +39,11 @@ import com.example.pertemuan12.ui.viewmodel.DosenUIState
 import com.example.pertemuan12.ui.viewmodel.DosenViewModel
 import com.example.pertemuan12.ui.viewmodel.FormErrorStateDosen
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DestinasiTambahDosen : Alamatnavigasi {
     override val route: String = "Tambah_Dosen"
@@ -55,7 +58,8 @@ fun TambahDosenView(
     onBackClick: () -> Unit,
     onHomeClick: () -> Unit,
     viewModel: DosenViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),  // Inisialisasi View Model
-) {
+
+    ) {
     val uiState = viewModel.uiStateDosen // Ambil UI state dari view model
     val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
     val coroutineScope = rememberCoroutineScope()
@@ -71,7 +75,7 @@ fun TambahDosenView(
     }
 
     Scaffold(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier,
 
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, // Tempatkan snackbar di scaffold
         bottomBar = { // Menambahkan CustomBottomAppBar di bawah
@@ -91,7 +95,7 @@ fun TambahDosenView(
             CustomTopAppBar(
                 onDosenClick = onDosenClick,
                 onMataKuliahClick = onMataKuliahClick,
-                judul = "Tambah Mahasiswa"
+                judul = "Tambah Dosen ProdiTI"
             )
 
             // Isi Body
@@ -102,9 +106,14 @@ fun TambahDosenView(
                 },
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveData() // Simpan data
+                        if (viewModel.validateFieldsDosen()) {
+                            viewModel.saveData()
+                            delay(500)
+                            withContext(Dispatchers.Main) {
+                                onNavigate() // Navigate after save
+                            }
+                        }
                     }
-                    onNavigate()
                 }
             )
         }
