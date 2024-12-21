@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.ui.Navigation.Alamatnavigasi
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.FormErrorStateMataKuliah
 import com.example.pertemuan12.ui.viewmodel.MataKuliahEvent
@@ -28,9 +29,12 @@ object DestinasiTambah : Alamatnavigasi {
 
 @Composable
 fun InsertMataKuliahView(
-    onBack: () -> Unit,
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
     onNavigate: () -> Unit,
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
     viewModel: MataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory)
 ) {
     val uiStateMataKuliah = viewModel.uiStateMataKuliah // Get UI state from ViewModel
@@ -50,7 +54,13 @@ fun InsertMataKuliahView(
 
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) } // Show snackbar in scaffold
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, // Show snackbar in scaffold
+                bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -59,9 +69,9 @@ fun InsertMataKuliahView(
                 .padding(16.dp)
         ) {
             CustomTopAppBar(
-                onBack = onBack,
-//                showBackButton = true,
-                judul = "Tambah Mata Kuliah"
+                onDosenClick = onDosenClick,
+                onMataKuliahClick =onMataKuliahClick,
+                judul = "Tambah MataKuliah ProdiTI"
             )
             // Body of the form
             InsertBodyMataKuliah(
@@ -132,9 +142,9 @@ fun FormMataKuliah(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.kode,
             onValueChange = { onValueChange(mataKuliahEvent.copy(kode = it)) },
-            label = { Text("Kode Mata Kuliah") },
+            label = { Text("Kode MataKuliah") },
             isError = errorState.kode != null,
-            placeholder = { Text("Masukkan Kode Mata Kuliah") }
+            placeholder = { Text("Masukkan Kode MataKuliah") }
         )
         Text(text = errorState.kode ?: "", color = Color.Red)
 
@@ -144,9 +154,9 @@ fun FormMataKuliah(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.nama,
             onValueChange = { onValueChange(mataKuliahEvent.copy(nama = it)) },
-            label = { Text("Nama Mata Kuliah") },
+            label = { Text("Nama MataKuliah") },
             isError = errorState.nama != null,
-            placeholder = { Text("Masukkan Nama Mata Kuliah") }
+            placeholder = { Text("Masukkan Nama MataKuliah") }
         )
         Text(text = errorState.nama ?: "", color = Color.Red)
 
@@ -156,9 +166,9 @@ fun FormMataKuliah(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.sks,
             onValueChange = { onValueChange(mataKuliahEvent.copy(sks = it)) },
-            label = { Text("Nama Mata Kuliah") },
+            label = { Text("SKS") },
             isError = errorState.sks != null,
-            placeholder = { Text("Masukkan Nama Mata Kuliah") }
+            placeholder = { Text("Masukkan SKS MataKuliah") }
         )
         Text(text = errorState.sks ?: "", color = Color.Red)
 
@@ -168,15 +178,15 @@ fun FormMataKuliah(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.semester,
             onValueChange = { onValueChange(mataKuliahEvent.copy(semester = it)) },
-            label = { Text("Nama Mata Kuliah") },
+            label = { Text("Semester") },
             isError = errorState.semester != null,
-            placeholder = { Text("Masukkan Nama Mata Kuliah") }
+            placeholder = { Text("Masukkan Semester MataKuliah") }
         )
         Text(text = errorState.semester ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Jenis Kelamin")
+        Text(text = "Jenis MataKuliah")
         Row(
             modifier = Modifier.fillMaxWidth()
         ){
