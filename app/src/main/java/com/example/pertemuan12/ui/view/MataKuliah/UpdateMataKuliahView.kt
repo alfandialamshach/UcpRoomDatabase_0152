@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.entity.Dosen
+import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
 import com.example.pertemuan12.ui.viewmodel.UpdateMataKuliahViewModel
@@ -19,8 +20,11 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun UpdateMataKuliahView(
-    onBack: () -> Unit,
+    onDosenClick: () -> Unit,
+    onMataKuliahClick: () -> Unit,
     onNavigate: () -> Unit,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
     modifier: Modifier = Modifier,
 
     viewModel: UpdateMataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory) // Initialize ViewModel
@@ -44,12 +48,20 @@ fun UpdateMataKuliahView(
 
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, // Place snackbar in scaffold
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        // Place snackbar in scaffold
+        bottomBar = { // Menambahkan CustomBottomAppBar di bawah
+            CustomBottomAppBar(
+                onBackClick = onBackClick,
+                onHomeClick = onHomeClick
+            )
+        },
         topBar = {
             CustomTopAppBar(
                 judul = "Edit Mata Kuliah", // Title for Update page
-//                showBackButton = true,
-                onBack = onBack // Back button functionality
+                onDosenClick = onDosenClick,
+                onMataKuliahClick =onMataKuliahClick,
+
             )
         }
     ) { padding ->
