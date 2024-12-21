@@ -14,8 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -202,16 +204,16 @@ fun CardDosen(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(6.dp)
     ){
         Column (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ){
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "")
+                Icon(imageVector = Icons.Filled.Face, contentDescription = "")
                 Spacer(modifier = Modifier.padding(4.dp))
                 Text(
                     text = dosen.nama,
@@ -220,7 +222,7 @@ fun CardDosen(
                 )
             }
             Row (
-                modifier = Modifier .fillMaxWidth(),
+                modifier = Modifier .fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(imageVector = Icons.Filled.DateRange, contentDescription = "")
@@ -228,18 +230,19 @@ fun CardDosen(
                 Text(
                     text = dosen.nidn,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 20.sp
                 )
             }
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Home, contentDescription = "")
+                Icon(imageVector = Icons.Filled.Warning, contentDescription = "")
                 Spacer(modifier = Modifier.padding(4.dp))
                 Text(
                     text = dosen.jenisKelamin,
                     fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
                 )
             }
         }
