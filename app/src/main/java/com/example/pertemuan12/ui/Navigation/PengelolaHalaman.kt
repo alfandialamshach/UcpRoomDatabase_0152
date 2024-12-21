@@ -43,15 +43,21 @@ fun PengelolaHalaman(
                 onAddMhs = {
                     navController.navigate(DestinasiTambah.route)
                 },
-                onBack = { navController.popBackStack() },
+                onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
+                onBackClick = { navController.popBackStack() },
+                onHomeClick = {navController.navigate(DestinasiHome.route)},
                 modifier = modifier
             )
         }
 
         composable(route = DestinasiTambah.route) {
             InsertMataKuliahView(
-                onBack = { navController.popBackStack() },
+                onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
                 onNavigate = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+                onHomeClick = {navController.navigate(DestinasiHome.route)},
                 modifier = modifier
             )
         }
@@ -73,6 +79,10 @@ fun PengelolaHalaman(
                     onEditClick = {
                         navController.navigate("${DestinasiUpdateMataKuliah.route}/$it")
                     },
+                    onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                    onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
+                    onHomeClick = {navController.navigate(DestinasiHome.route)},
+                    onBackClick = { navController.popBackStack() },
                     modifier = modifier,
                     onDeleteClick = {
                         navController.popBackStack()
@@ -87,15 +97,22 @@ fun PengelolaHalaman(
                 onAddMhs = {
                     navController.navigate(DestinasiTambahDosen.route)
                 },
-                onBack = { navController.popBackStack()},
+                onBackClick = { navController.popBackStack() },
+                onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
+                onHomeClick = {navController.navigate(DestinasiHome.route)},
                     modifier = modifier
+
             )
         }
 
         composable(route = DestinasiTambahDosen.route) {
             TambahDosenView(
-                onBack = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
                 onNavigate = { navController.popBackStack() },
+                onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
+                onHomeClick = {navController.navigate(DestinasiHome.route)},
                 modifier = modifier
             )
         }
@@ -109,10 +126,12 @@ fun PengelolaHalaman(
         {
 
             UpdateMataKuliahView(
-                onBack = {
-                    navController.popBackStack() },
+                onDosenClick = {navController.navigate(DestinasiHomeDosen.route)},
+                onMataKuliahClick = {navController.navigate(DestinasiHomeMataKuliah.route)},
                 onNavigate = {
                     navController.popBackStack() },
+                onHomeClick = {navController.navigate(DestinasiHome.route)},
+                onBackClick = { navController.popBackStack() },
                 modifier = modifier
             )
         }
