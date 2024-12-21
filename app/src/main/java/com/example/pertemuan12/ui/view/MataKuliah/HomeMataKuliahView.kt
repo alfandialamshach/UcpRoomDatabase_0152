@@ -13,7 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -69,7 +72,7 @@ fun HomeMataKuliahView(
         },
         topBar = {
             CustomTopAppBar(
-                judul = "Daftar MaataKuliah ProdiTI",
+                judul = "Daftar MataKuliah ProdiTI",
                 onDosenClick = onDosenClick,
                 onMataKuliahClick =onMataKuliahClick,
             )
@@ -201,17 +204,17 @@ fun CardMataKuliah(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(6.dp)
     ){
         Column (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ){
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "")
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
                     text = mataKuliah.nama,
                     fontWeight = FontWeight.Bold,
@@ -219,26 +222,27 @@ fun CardMataKuliah(
                 )
             }
             Row (
-                modifier = Modifier .fillMaxWidth(),
+                modifier = Modifier .fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(imageVector = Icons.Filled.DateRange, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
-                    text = mataKuliah.kode,
+                    text = mataKuliah.sks,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 20.sp
                 )
             }
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Home, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(imageVector = Icons.Filled.Face, contentDescription = "")
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
-                    text = mataKuliah.kode,
+                    text = mataKuliah.dosenPengampu,
                     fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
                 )
             }
         }
