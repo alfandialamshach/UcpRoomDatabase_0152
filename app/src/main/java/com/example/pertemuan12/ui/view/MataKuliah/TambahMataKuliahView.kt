@@ -16,12 +16,16 @@ import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.ui.Navigation.Alamatnavigasi
 import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
+import com.example.pertemuan12.ui.viewmodel.DosenViewModel
 import com.example.pertemuan12.ui.viewmodel.FormErrorStateMataKuliah
 import com.example.pertemuan12.ui.viewmodel.MataKuliahEvent
 import com.example.pertemuan12.ui.viewmodel.MataKuliahUIState
 import com.example.pertemuan12.ui.viewmodel.MataKuliahViewModel
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DestinasiTambah : Alamatnavigasi {
     override val route: String = "tambah_matakuliah"
@@ -35,7 +39,7 @@ fun InsertMataKuliahView(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onHomeClick: () -> Unit,
-    viewModel: MataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory)
+    viewModel: MataKuliahViewModel = viewModel(factory = PenyediaViewModelProdiTI.Factory),
 ) {
     val uiStateMataKuliah = viewModel.uiStateMataKuliah // Get UI state from ViewModel
 
@@ -71,19 +75,27 @@ fun InsertMataKuliahView(
             CustomTopAppBar(
                 onDosenClick = onDosenClick,
                 onMataKuliahClick =onMataKuliahClick,
-                judul = "Tambah MataKuliah ProdiTI"
+                judul = "Tambah MataKuliah"
             )
             // Body of the form
             InsertBodyMataKuliah(
                 uiState = uiStateMataKuliah,
+                dosenList = uiStateMataKuliah.dosenList,
                 onValueChange = { updateEvent -> viewModel.updateStateMataKuliah(updateEvent) },
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveDataMataKuliah() // Save data
+//                        viewModel.saveDataMataKuliah() // Save data
+                        if (viewModel.validateFieldsTambah()){
+                            viewModel.saveDataMataKuliah()
+                            delay(500)
+                            withContext(Dispatchers.Main){
+                                onNavigate() // Navigate after save
+                            }
+                        }
                     }
-                    onNavigate() // Navigate after save
+
                 },
-                dosenList = uiStateMataKuliah.dosenList // Pass the list of dosen
+//                dosenList = uiStateMataKuliah.dosenList // Pass the list of dosen
             )
         }
     }
@@ -238,7 +250,8 @@ fun FormMataKuliah(
                             expanded = false
                             onValueChange(mataKuliahEvent.copy(dosenPengampu = dosen.nama))
                         },
-                        text = { Text(text = dosen.nama) }
+                        text = { Text(text = dosen.nama) },
+
                     )
                 }
             }
