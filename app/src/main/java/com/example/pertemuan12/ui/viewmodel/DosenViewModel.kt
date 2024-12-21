@@ -7,26 +7,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pertemuan12.entity.Dosen
 import com.example.pertemuan12.repository.RepositoryDosen
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(){
 
     var uiStateDosen by mutableStateOf(DosenUIState())
-
+        private set
     // Memperbarui state berdasarkan input pengguna
     fun updateStateDosen(dosenEvent: DosenEvent){
         uiStateDosen = uiStateDosen.copy(
             dosenEvent = dosenEvent,
         )
     }
+
+
     //validasi data input pengguna
     private fun validateFieldsDosen(): Boolean{
         val event = uiStateDosen.dosenEvent
         val errorState = FormErrorStateDosen(
-            nidn = if (event.nidn.isNotEmpty()) null else "NIM tidak boleh kosong",
-            nama = if (event.nama.isNotEmpty()) null else "Nama tidak boleh kosong",
+            nidn = if (event.nidn.isNotEmpty()) null else "Nama tidak boleh kosong",
+            nama = if (event.nama.isNotEmpty()) null else "NIDN tidak boleh kosong",
             jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin tidak boleh kosong",
-            alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh kosong"
         )
         uiStateDosen = uiStateDosen.copy(isEntryValid = errorState)
         return errorState.isValidDosen()
@@ -35,6 +38,7 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
     //Menyimpan data ke repository
     fun saveData() {
         val currentEventDosen = uiStateDosen.dosenEvent
+
         if (validateFieldsDosen()){
             viewModelScope.launch {
                 try {
@@ -94,6 +98,5 @@ data class DosenEvent(
 fun DosenEvent.toDosenEntity(): Dosen = Dosen(
     nidn = nidn,
     nama = nama,
-    alamat = alamat,
     jenisKelamin = jenisKelamin,
 )
