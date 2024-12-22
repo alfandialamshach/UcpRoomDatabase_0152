@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(){
 
+    // Variabel UI State untuk Dosen
     var uiStateDosen by mutableStateOf(DosenUIState())
         private set
     // Memperbarui state berdasarkan input pengguna
@@ -23,7 +24,7 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
     }
 
 
-    //validasi data input pengguna
+    //validasi data input pengguna harus tidak boleh kosong
      fun validateFieldsDosen(): Boolean{
         val event = uiStateDosen.dosenEvent
         val errorState = FormErrorStateDosen(
@@ -31,20 +32,24 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
             nama = if (event.nama.isNotEmpty()) null else "NIDN tidak boleh kosong",
             jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin tidak boleh kosong",
         )
+        // Update state untuk error message
         uiStateDosen = uiStateDosen.copy(isEntryValid = errorState)
+        // Pastikan form valid jika tidak ada pesan error
         return errorState.isValidDosen()
     }
 
-    //Menyimpan data ke repository
+    //Menyimpan data ke repository Dosen
     fun saveData() {
         val currentEventDosen = uiStateDosen.dosenEvent
-
+        // Jika validasi sukses, simpan data ke repository
         if (validateFieldsDosen()){
             viewModelScope.launch {
                 try {
+                    // Menyimpan data ke repository
                     repositoryDosen.insertDosen(currentEventDosen.toDosenEntity())
+                    // Jika penyimpanan berhasil, reset form dan tampilkan pesan sukses
                     uiStateDosen = uiStateDosen.copy(
-                        snackBarMessage = "Data Berhasil disimpan",
+                        snackBarMessage = "Data Berhasil disimpan", // Pesan berhasil
                         dosenEvent = DosenEvent(), // Reset Input form
                         isEntryValid = FormErrorStateDosen() // Reset Error State
                     )
@@ -54,6 +59,7 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
                     )
                 }
             }
+            //untuk memperbarui state (keadaan) UI ketika input pengguna tidak valid.
         } else {
             uiStateDosen = uiStateDosen.copy(
                 snackBarMessage = "Input tidak valid. Perikasa kembali dta anda"
@@ -66,20 +72,21 @@ class DosenViewModel (private  val repositoryDosen:RepositoryDosen) : ViewModel(
         uiStateDosen = uiStateDosen.copy(snackBarMessage = null)
     }
 }
-
+//untuk merepresentasikan state (keadaan) dari UI yang berhubungan dengan entitas dosen.
 data class DosenUIState(
     val dosenEvent: DosenEvent = DosenEvent(),
     val isEntryValid: FormErrorStateDosen = FormErrorStateDosen(),
     val snackBarMessage:String?= null,
 )
 
+//untuk merepresentasikan status kesalahan (error state) pada sebuah formulir
 data class FormErrorStateDosen(
     val nidn: String? = null,
     val nama: String? = null,
     val alamat: String? = null,
     val jenisKelamin: String? = null
 
-){
+){  //untuk memvalidasi apakah data dosen dianggap valid atau tidak.
     fun isValidDosen(): Boolean {
         return nidn == null && nama == null && jenisKelamin == null &&
                 alamat == null
