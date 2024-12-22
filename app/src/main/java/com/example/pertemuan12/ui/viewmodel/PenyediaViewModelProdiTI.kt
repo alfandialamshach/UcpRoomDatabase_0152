@@ -18,40 +18,34 @@ object PenyediaViewModelProdiTI{
         initializer {
             MataKuliahViewModel(
                 ProdiTIApp().containerApp.repositoryMataKuliah,
-                ProdiTIApp().containerApp.repositoryDosen // Pastikan repositoryDosen juga ada
+                ProdiTIApp().containerApp.repositoryDosen
             )
         }
 
+        //Dependency Injection
         initializer {
             DosenViewModel(
-                ProdiTIApp().containerApp.repositoryDosen // Pastikan repositoryDosen juga ada
+                ProdiTIApp().containerApp.repositoryDosen
             )
         }
 
-
+        //Dependency Injection
         initializer {
             HomeMataKuliahViewModel(
                 ProdiTIApp().containerApp.repositoryMataKuliah,
                 ProdiTIApp().containerApp.repositoryDosen
 
-            // Pastikan repositoryDosen juga ada
             )
         }
 
+        //Dependency Injection
         initializer {
             HomeDosenViewModel(
-                ProdiTIApp().containerApp.repositoryDosen // Pastikan repositoryDosen juga ada
-            )
-        }
-
-
-        initializer {
-            HomeProdiTIViewModel(
-                ProdiTIApp().containerApp.repositoryMataKuliah,
                 ProdiTIApp().containerApp.repositoryDosen
             )
         }
 
+        //Dependency Injection
         initializer {
             DetailMataKuliahViewModel(
                 createSavedStateHandle(),
@@ -59,6 +53,7 @@ object PenyediaViewModelProdiTI{
             )
         }
 
+        //Dependency Injection
         initializer {
             UpdateMataKuliahViewModel(
                 createSavedStateHandle(),
