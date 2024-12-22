@@ -52,7 +52,7 @@ class HomeDosenViewModel (
             )
         )
 }
-
+//untuk mengelola dan menyimpan state (status) dari UI (User Interface) di dalam aplikasi.
 data class HomeUiStateDosen(
     val listDosen: List<Dosen> = listOf(),
     val isloadingDosen: Boolean = false,
