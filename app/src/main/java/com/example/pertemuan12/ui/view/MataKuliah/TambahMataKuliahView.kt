@@ -95,7 +95,6 @@ fun InsertMataKuliahView(
                     }
 
                 },
-//                dosenList = uiStateMataKuliah.dosenList // Pass the list of dosen
             )
         }
     }
@@ -119,7 +118,7 @@ fun InsertBodyMataKuliah(
             onValueChange = onValueChange,
             errorState = uiState.isEntryValid,
             modifier = Modifier.fillMaxWidth(),
-            dosenList = dosenList // Pass the dosenList to FormMataKuliah
+            dosenList = dosenList //  dosenList to FormMataKuliah
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
