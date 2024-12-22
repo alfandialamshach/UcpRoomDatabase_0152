@@ -17,27 +17,18 @@ class MataKuliahViewModel(
     private val repositoryDosen: RepositoryDosen
 ) : ViewModel() {
 
-    // UI State for MataKuliah
+    // Variabel UI State untuk MataKuliah
     var uiStateMataKuliah by mutableStateOf(MataKuliahUIState())
         private set
 
-    // MataKuliah List
-    var mataKuliahList by mutableStateOf<List<MataKuliah>>(emptyList())
-        private set
 
-    // Dosen List
+    // Variabel Dosen List
     var dosenList by mutableStateOf<List<Dosen>>(emptyList())
         private set
 
     init {
-        // Fetch MataKuliah from repository
-        viewModelScope.launch {
-            repositoryMataKuliah.getAllMataKuliah().collect { mataKuliahList ->
-                this@MataKuliahViewModel.mataKuliahList = mataKuliahList
-            }
-        }
 
-        // Fetch Dosen from repository
+        // Mengambil data Dosen dari repository dosen
         viewModelScope.launch {
             repositoryDosen.getAllDosen().collect { dosenList ->
                 this@MataKuliahViewModel.dosenList = dosenList
@@ -46,14 +37,14 @@ class MataKuliahViewModel(
         }
     }
 
-    // Update the state for MataKuliah input fields
+    // Update the state di MataKuliah input fields
     fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
         uiStateMataKuliah = uiStateMataKuliah.copy(
             mataKuliahEvent = mataKuliahEvent
         )
     }
 
-    // Validate input fields for MataKuliah
+    // Validate input fields dalam MataKuliah harus tidak boleh kosong
     fun validateFieldsTambah(): Boolean {
         val eventMataKuliah = uiStateMataKuliah.mataKuliahEvent
         val errorStateMatakuliah = FormErrorStateMataKuliah(
@@ -67,13 +58,12 @@ class MataKuliahViewModel(
 
         // Update state untuk error message
         uiStateMataKuliah = uiStateMataKuliah.copy(isEntryValid = errorStateMatakuliah)
-
         // Pastikan form valid jika tidak ada pesan error
         return errorStateMatakuliah.isValid()
     }
 
 
-    // Save MataKuliah data to repository
+    // Save MataKuliah data to repository matakuliah
     fun saveDataMataKuliah() {
         val currentEventMataKuliah = uiStateMataKuliah.mataKuliahEvent
 
@@ -108,18 +98,18 @@ class MataKuliahViewModel(
     }
 
 
-    // Reset snackbar message after it's displayed
+    // Setel ulang pesan snackbar setelah ditampilkan
     fun resetSnackBarMessageMataKuliah() {
         uiStateMataKuliah = uiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
     }
 
-    // Update UI state with Dosen list
+    // Perbarui status UI dengan daftar Dosen
     private fun updateUiState() {
         uiStateMataKuliah = uiStateMataKuliah.copy(dosenList = dosenList)
     }
 }
 
-// UI State for MataKuliah
+// UI State untuk MataKuliah
 data class MataKuliahUIState(
     val mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     val isEntryValid: FormErrorStateMataKuliah = FormErrorStateMataKuliah(),
@@ -127,7 +117,7 @@ data class MataKuliahUIState(
     val dosenList: List<Dosen> = emptyList()
 )
 
-// Error state for MataKuliah form validation
+// Error state untuk MataKuliah form validation
 data class FormErrorStateMataKuliah(
     val kode: String? = null,
     val nama: String? = null,
@@ -143,7 +133,7 @@ data class FormErrorStateMataKuliah(
 }
 
 
-// Data class to hold MataKuliah form input values
+// Kelas data untuk menampung nilai input formulir MataKuliah
 data class MataKuliahEvent(
     val kode: String = "",
     val nama: String = "",
