@@ -54,7 +54,7 @@ class HomeMataKuliahViewModel (
             )
         )
 }
-
+//untuk mengelola dan menyimpan state (status) dari UI (User Interface) di dalam aplikasi.
 data class HomeUiState(
     val listMataKuliah: List<MataKuliah> = listOf(),
     val isloading: Boolean = false,
