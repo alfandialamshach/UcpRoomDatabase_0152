@@ -22,17 +22,18 @@ class UpdateMataKuliahViewModel(
     private val repositoryMataKuliah: RepositoryMataKuliah,
     private val repositoryDosen: RepositoryDosen
 ) : ViewModel() {
-    // Dosen List
+
+    // Variabel Dosen List
     var dosenList by mutableStateOf<List<Dosen>>(emptyList())
         private set
-
+    // update UI state MataKuliah
     var updateUiStateMataKuliah by mutableStateOf(MataKuliahUIState())
         private set
 
     private val _kode: String = checkNotNull(savedStateHandle[DestinasiUpdateMataKuliah.KODE])
 
     init {
-        // Fetch Mata Kuliah Data by Kode
+        // mengambil data MataKuliah berdasarkan kode
         viewModelScope.launch {
             updateUiStateMataKuliah = repositoryMataKuliah.getMataKuliah(_kode)
                 .filterNotNull()
@@ -40,7 +41,7 @@ class UpdateMataKuliahViewModel(
                 .toUIStateMataKuliah()
         }
 
-        // Fetch Dosen from repository
+        // Mengambil data Dosen dari repository dosen
         viewModelScope.launch {
             val dosenListFromRepo = repositoryDosen.getAllDosen().first() // Fetch Dosen
             dosenList = dosenListFromRepo
@@ -48,17 +49,13 @@ class UpdateMataKuliahViewModel(
         }
     }
 
-//    fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
-//        updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
-//            // you can add additional state updates here if needed
-//        )
-//    }
 
+    // Update the state di MataKuliah input fields
     fun updateStateMataKuliah(mataKuliahEvent: MataKuliahEvent) {
         println("Update Event: $mataKuliahEvent")
         updateUiStateMataKuliah = updateUiStateMataKuliah.copy(mataKuliahEvent = mataKuliahEvent)
     }
-
+    // Validate input fields dalam MataKuliah harus tidak boleh kosong
     fun validateField(): Boolean {
         val event = updateUiStateMataKuliah.mataKuliahEvent
         val errorState = FormErrorStateMataKuliah(
@@ -70,39 +67,45 @@ class UpdateMataKuliahViewModel(
             dosenPengampu = if (event.dosenPengampu.isNotEmpty()) null else "Dosen Pengampu Tidak boleh kosong"
         )
 
+        // Update state untuk error message
         updateUiStateMataKuliah = updateUiStateMataKuliah.copy(isEntryValid = errorState)
+        // Pastikan form valid jika tidak ada pesan error
         return errorState.isValid()
     }
 
+    // Save MataKuliah data to repository matakuliah
     fun updateData() {
         val  currentEvent = updateUiStateMataKuliah.mataKuliahEvent
-
+        // Validasi form sebelum menyimpan
         if (validateField()) {
+            // Jika validasi sukses, simpan data ke repository
             viewModelScope.launch {
                 try {
+                    // Menyimpan data ke repository
                     repositoryMataKuliah.updateMataKuliah(currentEvent.toMataKuliahEntity())
+                    // Jika penyimpanan berhasil, reset form dan tampilkan pesan sukses
                     updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
-                        snackBarMessageMataKuliah = "Data Berhasil Diupdate",
-                        mataKuliahEvent = MataKuliahEvent(),
-                        isEntryValid = FormErrorStateMataKuliah()
+                        snackBarMessageMataKuliah = "Data Berhasil Diupdate", // Pesan berhasil
+                        mataKuliahEvent = MataKuliahEvent(), // Reset form
+                        isEntryValid = FormErrorStateMataKuliah() // Reset error state
                     )
                     println("snackBarMessage diatur: ${updateUiStateMataKuliah.snackBarMessageMataKuliah}")
                 }catch (e: Exception) {
+                    // Jika terjadi error, tampilkan pesan error
                     updateUiStateMataKuliah =updateUiStateMataKuliah.copy(
                         snackBarMessageMataKuliah = "Data gaga; diupdate"
                     )
                 }
             }
-            fun  resetSnackBarMessage(){
-                updateUiStateMataKuliah = updateUiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
-            }
+
+        // Jika validasi gagal, tampilkan pesan error
         } else {
             updateUiStateMataKuliah = updateUiStateMataKuliah.copy(
                 snackBarMessageMataKuliah = " Data gagal diupdate"
             )
         }
     }
-
+    // Setel ulang pesan snackbar setelah ditampilkan
     fun resetSnackBarMessage() {
         updateUiStateMataKuliah = updateUiStateMataKuliah.copy(snackBarMessageMataKuliah = null)
     }
