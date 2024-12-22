@@ -1,6 +1,5 @@
 package com.example.pertemuan12.ui.view.Dosen
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -25,12 +23,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Insert
 import com.example.pertemuan12.ui.Navigation.Alamatnavigasi
 import com.example.pertemuan12.ui.costumwidget.CustomBottomAppBar
 import com.example.pertemuan12.ui.costumwidget.CustomTopAppBar
@@ -41,7 +36,6 @@ import com.example.pertemuan12.ui.viewmodel.FormErrorStateDosen
 import com.example.pertemuan12.ui.viewmodel.PenyediaViewModelProdiTI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -91,14 +85,13 @@ fun TambahDosenView(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            // Top App Bar di atas
+
             CustomTopAppBar(
                 onDosenClick = onDosenClick,
                 onMataKuliahClick = onMataKuliahClick,
                 judul = "Tambah Dosen ProdiTI"
             )
 
-            // Isi Body
             InsertBodyDosen(
                 uiState = uiState,
                 onValueChange = { updateEvent ->
@@ -110,7 +103,7 @@ fun TambahDosenView(
                             viewModel.saveData()
                             delay(500)
                             withContext(Dispatchers.Main) {
-                                onNavigate() // Navigate after save
+                                onNavigate()
                             }
                         }
                     }
