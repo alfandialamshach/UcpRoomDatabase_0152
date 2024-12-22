@@ -96,7 +96,7 @@ fun DetailMataKuliahView(
             modifier = Modifier.padding(innerPadding),
             detailUiState = detailUiState,
             onDeleteClick = {
-                viewModel.deleteMhs()
+                viewModel.deleteMataKuliah()
                 onDeleteClick
             }
         )
