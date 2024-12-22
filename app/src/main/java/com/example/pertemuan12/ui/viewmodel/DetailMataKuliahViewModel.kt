@@ -37,6 +37,7 @@ class DetailMataKuliahViewModel (
             emit(DetailUiState(isLoading = true))
             delay(600)
         }
+        //untuk menangani kesalahan yang mungkin terjadi selama eksekus
         .catch {
             emit(
                 DetailUiState(
@@ -47,6 +48,7 @@ class DetailMataKuliahViewModel (
                     )
             )
         }
+        //untuk pengelolaan state secara reaktif dan efisien dalam konteks ViewModel
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(2000),
@@ -54,8 +56,8 @@ class DetailMataKuliahViewModel (
                 isLoading = true,
             ),
         )
-
-    fun deleteMhs() {
+    //Fungsi untuk menghapus data mahasiswa
+    fun deleteMataKuliah() {
         detailUiState.value.detailUiEvent.toMataKuliahEntity().let {
             viewModelScope.launch {
                 repositoryMataKuliah.deleteMataKuliah(it)
@@ -63,7 +65,7 @@ class DetailMataKuliahViewModel (
         }
     }
 }
-
+// untuk merepresentasikan keadaan (state) UI pada sebuah fitur detail
 data class DetailUiState(
     val detailUiEvent: MataKuliahEvent = MataKuliahEvent(),
     val isLoading: Boolean = false,
@@ -77,7 +79,6 @@ data class DetailUiState(
         get() =detailUiEvent != MataKuliahEvent()
 }
 
-// Data class untuk menampung data yang akan ditampilkan di UI
 
 //memindahkan data dari entity ke ui
 fun MataKuliah.toDetailUiEvent(): MataKuliahEvent {
