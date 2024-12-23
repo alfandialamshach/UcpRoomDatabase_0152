@@ -22,4 +22,12 @@
 ![image](https://github.com/user-attachments/assets/33418cf6-f8df-41af-bf2e-2fa690c98ba7)
 //Hasil Delete
 ![image](https://github.com/user-attachments/assets/3dabf469-1d9b-44fc-a832-40539fae50e6)
+//validasi data tidak boleh kosong tambah dosen
+![image](https://github.com/user-attachments/assets/40a05775-da3f-4d76-950e-7db83191f7e7)
+//validasi data tidak boleh kosong tambah MataKuliah
+![image](https://github.com/user-attachments/assets/e5636281-f731-47a6-a954-a44d01c362c1)
+//validasi data tidak boleh kosong edit MataKuliah
+![image](https://github.com/user-attachments/assets/4640377a-2fe0-44a6-a24c-9eed46dfb9ed)
+
+
 
